@@ -1,77 +1,159 @@
+# From PCA to Factor Analysis
+
+Factor Analysis can be viewed as an extension (or modification) of Principal Components Analysis (PCA). While PCA tries to reduce dimensionality by explaining the variance of observed features with a small number of components, Factor Analysis introduces a more explicit notion of "noise" or "measurement error" and focuses on reproducing correlations among features.
+
+In PCA, we often write each observed vector $\mathbf{x}_t \in \mathbb{R}^p$ (for $t = 1, \ldots, T$) as a combination of a small number $q$ of principal components. However, PCA does not explicitly model noise per feature, and it may try to explain even the random fluctuations.
+
+By contrast, Factor Analysis posits that each observed data vector $\mathbf{x}_t \in \mathbb{R}^p$ is generated from a small set of $q$ latent factors $\mathbf{f}_t$ plus additive feature-specific noise. Hence the model captures shared structure (through a few factors) and also acknowledges individual "measurement error" or idiosyncratic variation for each feature.
+
 # Notation
 
-- Time index: $t=1,...,T$
-- Number of observable variables: $i=1,...,N$
-- Number of factors: $j=1,...,Q$
+- **Observables**: $\mathbf{X} \in \mathbb{R}^{T \times N}$
 
-- Data: 
-    - Matrix: $\mathbf{X} \in \mathbb{R}^{T \times N}$
-    - Vector: $\mathbf{x}_t \in \mathbb{R}^{N}$ 
-    - Element: $x_{it}$
+    - Element: $x_{ti} \in \mathbb{R}$ where $t=1,...,T$ and $i=1,...,N$
 
-- Idiosyncratic component: 
-    - Matrix: $\boldsymbol{\epsilon} \in \mathbb{R}^{T \times N}$
-    - Vector: $\boldsymbol{\epsilon}_t \in \mathbb{R}^{N}$
-    - Element: $\epsilon_{it}$
+    - Columns: $\mathbf{x}_{\cdot i} \in \mathbb{R}^{T \times 1}$
 
-- Factor loadings: 
-    - Matrix: $\boldsymbol{\Lambda} \in \mathbb{R}^{N \times Q}$
+    - Rows: $\mathbf{x}_{t \cdot} \in \mathbb{R}^{N \times 1}$
 
-$$
-\boldsymbol{\Lambda} = \begin{bmatrix}
-\lambda_{11} & \lambda_{12} & \cdots & \lambda_{1Q} \\
-\lambda_{21} & \lambda_{22} & \cdots & \lambda_{2Q} \\
-\vdots & \vdots & \ddots & \vdots \\
-\lambda_{N1} & \lambda_{N2} & \cdots & \lambda_{NQ}
-\end{bmatrix}
-$$
+    - Covariance Matrix: $\mathbb{C}(\mathbf{x}_{t \cdot}) = \boldsymbol{\Sigma}_x \in \mathbb{R}^{N \times N}$
 
-- Factors:
-    - Matrix: $\mathbf{F} \in \mathbb{R}^{T \times Q}$
-    - Vector: $\mathbf{f}_t \in \mathbb{R}^{Q}$
+- **Factors**: $\mathbf{F} \in \mathbb{R}^{T \times q}$
 
-$$
-\mathbf{F} = 
+    - Element: $f_{tr} \in \mathbb{R}$ where $r=1,...,q$
 
-\begin{bmatrix}
-    \mathbf{f}_1^{\top} \\
-    \vdots \\
-    \mathbf{f}_T^{\top}
-\end{bmatrix} =
+    - Columns: $\mathbf{f}_{\cdot r} \in \mathbb{R}^{T \times 1}$
 
-\begin{bmatrix}
-f_{11} & f_{12} & \cdots & f_{1Q} \\
-f_{21} & f_{22} & \cdots & f_{2Q} \\
-\vdots & \vdots & \ddots & \vdots \\
-f_{T1} & f_{T2} & \cdots & f_{TQ}
-\end{bmatrix}
-$$
+    - Rows: $\mathbf{f}_{t \cdot} \in \mathbb{R}^{q \times 1}$
 
-- Common Component: 
+    - Covariance Matrix: $\mathbb{C}(\mathbf{f}_{t \cdot}) = \boldsymbol{\Sigma}_f \in \mathbb{R}^{q \times q}$
 
-Notes:
-- All vectors are column vectors.
+- **State Transition Matrix**: $\boldsymbol{\Phi} \in \mathbb{R}^{q \times q}$
+
+- **Loadings (or measurement matrix, or observation matrix)**: $\boldsymbol{\Lambda} \in \mathbb{R}^{N \times q}$ represents a matrix of weights.
+
+    - Element: $\lambda_{ir} \in \mathbb{R}$
+
+    - Columns: $\boldsymbol{\lambda}_{\cdot r} \in \mathbb{R}^{N \times 1}$
+
+    - Rows: $\boldsymbol{\lambda}_{i \cdot} \in \mathbb{R}^{q \times 1}$
+
+- **Idiosyncratic errors/shocks/component**: $\mathbf{E} \in \mathbb{R}^{T \times N}$
+
+    - Element: $e_{ti} \in \mathbb{R}$
+
+    - Columns: $\mathbf{e}_{\cdot i} \in \mathbb{R}^{T \times 1}$
+
+    - Rows: $\mathbf{e}_{t \cdot} \in \mathbb{R}^{N \times 1}$
+
+    - Covariance Matrix: $\mathbb{C}(\mathbf{e}_{t \cdot}) = \boldsymbol{\Sigma}_e \in \mathbb{R}^{N \times N}$
+
+- **Factor/State errors/shocks**: $\mathbf{U} \in \mathbb{R}^{T \times q}$
+
+    - Element: $u_{tr} \in \mathbb{R}$
+
+    - Columns: $\mathbf{u}_{\cdot r} \in \mathbb{R}^{T \times 1}$
+
+    - Rows: $\mathbf{u}_{t \cdot} \in \mathbb{R}^{q \times 1}$
+
+    - Covariance Matrix: $\mathbb{C}(\mathbf{u}_{t \cdot}) = \boldsymbol{\Sigma}_u \in \mathbb{R}^{q \times q}$
+
+# Definitions
+
+- **Common Component**: $$\boldsymbol{\Lambda} \mathbf{f}_{t \cdot}$$
+
+- **Common Component for variable $i$**: $$\mathbf{f}_{t \cdot}^T \boldsymbol{\lambda}_{i \cdot}$$
+
+- **Exact/Strict Factor Model**: Assumes $\boldsymbol{\Sigma}_e$ is a diagonal matrix.
+
+- **Approximate Factor Model**: Allows $\boldsymbol{\Sigma}_e$ to be non-diagonal matrix, allowing for weak correlation among idiosyncratic components.
+
+- **Static Factor Model**: In a static factor model, the relationship between observed variables and latent factors is contemporaneous, with no lag structure in the observation equation.
+
+- **Dynamic Factor Model**: Allow lags of the factors to affect the observed variables in the observation equation.
 
 # Static Factor Model
 
-## Observation Equation
+## Observation/Measurement Equation
 
 **Scalar Form:**
 
 $$
-x_{i t}=\lambda_{i 1} f_{1 t} + \ldots + \lambda_{i r} f_{r t} + \epsilon_{it} \tag{1}
+x_{ti} = \mathbf{f}_{t \cdot}^T \boldsymbol{\lambda}_{i \cdot} + e_{ti} \tag{1.1}
 $$
 
 **Vector Form:**
 
 $$
-\mathbf{x}_t = \boldsymbol{\Lambda} \mathbf{f}_t + \boldsymbol{\epsilon}_t \tag{2}
+\mathbf{x}_{t \cdot} = \boldsymbol{\Lambda} \mathbf{f}_{t \cdot} + \mathbf{e}_{t \cdot} \tag{1.2}
 $$
 
 **Matrix Form:**
 
 $$
-\mathbf{X} = \mathbf{F} \boldsymbol{\Lambda}^{\prime} + \boldsymbol{\epsilon} \tag{3}
+\mathbf{X} = \mathbf{F} \boldsymbol{\Lambda}^T + \mathbf{E} \tag{1.3}
+$$
+
+## State Equation
+
+$$
+\mathbf{f}_{t \cdot} = \boldsymbol{\Phi} \mathbf{f}_{t-1, \cdot} + \mathbf{u}_{t \cdot} \tag{1.4}
+$$
+
+# Dynamic Factor Model
+
+$$
+\mathbf{x}_{t \cdot} = \sum_{j'=1}^{p'} \boldsymbol{\Lambda}_{j'} \mathbf{f}_{t-j', \cdot} + \mathbf{e}_{t \cdot} \tag{2.1}
+$$
+
+$$
+\mathbf{f}_{t \cdot} = \sum_{j=1}^p \boldsymbol{\Phi}_j \mathbf{f}_{t-j, \cdot} + \mathbf{u}_{t \cdot} \tag{2.2}
+$$
+
+# Writing the Dynamic Factor Model as a Static Factor Model
+
+$$
+\begin{array}{lr}
+
+\mathbf{x}_{t} = \tilde{\mathbf{\Lambda}} \tilde{\mathbf{f}}_{t} + \mathbf{e}_{t}, & \mathbf{e}_{t} \sim N(\mathbf{0}, \boldsymbol{\Sigma}_e) \\
+
+\tilde{\mathbf{f}}_{t} = \tilde{\boldsymbol{\Phi}} \tilde{\mathbf{f}}_{t-1} + \mathbf{u}_{t}, & \mathbf{u}_{t} \sim N(\mathbf{0}, \tilde{\boldsymbol{\Sigma}}_u) \tag{3}
+
+\end{array}
+$$
+
+where $\mathbf{x}_{t}, \mathbf{e}_{t}$ and $\boldsymbol{\Sigma}_e$ are as in (1) and (2), and the other matrices are
+
+$$
+\begin{align*}
+
+\tilde{\mathbf{f}}_{t} & =
+[\mathbf{f}_{t}^{\top}, \mathbf{f}_{t-1}^{\top}, \ldots, \mathbf{f}_{t-p}^{\top}]^{\top} \in \mathbb{R}^{qp}\\
+
+\tilde{\mathbf{\Lambda}} & =
+[\mathbf{\Lambda}, \mathbf{0}, \ldots, \mathbf{0}] \in \mathbb{R}^{N \times qp}, \text { where } \mathbf{0} \text { are } N \times q \text { matrices of zeros for each factor lag }  \\
+
+\tilde{\boldsymbol{\Phi}} & =
+\left(\begin{array}{ccccc}
+\boldsymbol{\Phi}_{1} & \boldsymbol{\Phi}_{2} & \cdots & \boldsymbol{\Phi}_{p-1} & \boldsymbol{\Phi}_{p} \\
+\mathbf{I}_{1} & \mathbf{0} & \cdots & \mathbf{0} & \mathbf{0} \\
+\mathbf{0} & \mathbf{I}_{2} & \cdots & \mathbf{0} & \mathbf{0} \\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+\mathbf{0} & \mathbf{0} & \cdots & \mathbf{I}_{p-1} & \mathbf{0}
+\end{array}\right) \in \mathbb{R}^{qp \times qp} \text {, where } \mathbf{0} / \mathbf{I} \text { are } r \times r \text { zero } / \text { identity matrices }  \\
+
+\tilde{\mathbf{u}}_{t} & =
+[\mathbf{u}_{t}^{\top}, \mathbf{0}^{\top}, \ldots, \mathbf{0}^{\top}]^{\top} \in \mathbb{R}^{qp}, \text { with } \mathbf{0} \text { a } q \times 1 \text { vector of zeros }  \\
+
+\tilde{\boldsymbol{\Sigma}}_u & =
+\left(\begin{array}{cccc}
+\boldsymbol{\Sigma}_U & \mathbf{0} & \cdots & \mathbf{0} \\
+\mathbf{0} & \mathbf{0} & \cdots & \mathbf{0} \\
+\vdots & \vdots & \ddots & \vdots \\
+\mathbf{0} & \mathbf{0} & \cdots & \mathbf{0}
+\end{array}\right) \in \mathbb{R}^{qp \times qp}, \text { where } \mathbf{0} \text { are } q \times q \text { zero matrices}
+
+\end{align*}
 $$
 
 # Types of Factor Models
