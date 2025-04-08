@@ -84,35 +84,43 @@ By contrast, Factor Analysis posits that each observed data vector $\mathbf{x}_t
 **Scalar Form:**
 
 $$
-x_{ti} = \mathbf{f}_{t \cdot}^T \boldsymbol{\lambda}_{i \cdot} + e_{ti} \tag{1.1}
+x_{ti} = \mathbf{f}_{t \cdot}^T \boldsymbol{\lambda}_{i \cdot} + e_{ti} 
+\tag{1.1}
 $$
 
 **Vector Form:**
 
 $$
-\mathbf{x}_{t \cdot} = \boldsymbol{\Lambda} \mathbf{f}_{t \cdot} + \mathbf{e}_{t \cdot} \tag{1.2}
+\mathbf{x}_{t \cdot} = \boldsymbol{\Lambda} \mathbf{f}_{t \cdot} + \mathbf{e}_{t \cdot} 
+\tag{1.2}
 $$
 
 **Matrix Form:**
 
 $$
-\mathbf{X} = \mathbf{F} \boldsymbol{\Lambda}^T + \mathbf{E} \tag{1.3}
+\mathbf{X} = \mathbf{F} \boldsymbol{\Lambda}^T + \mathbf{E} 
+\tag{1.3}
 $$
 
 ## State Equation
 
 $$
-\mathbf{f}_{t \cdot} = \boldsymbol{\Phi} \mathbf{f}_{t-1, \cdot} + \mathbf{u}_{t \cdot} \tag{1.4}
+\mathbf{f}_{t \cdot} = \boldsymbol{\Phi} \mathbf{f}_{t-1, \cdot} + \mathbf{u}_{t \cdot} 
+\tag{1.4}
 $$
 
 # Dynamic Factor Model
 
 $$
-\mathbf{x}_{t \cdot} = \sum_{j'=1}^{p'} \boldsymbol{\Lambda}_{j'} \mathbf{f}_{t-j', \cdot} + \mathbf{e}_{t \cdot} \tag{2.1}
+\mathbf{x}_{t \cdot} = 
+\sum_{j'=1}^{p'} \boldsymbol{\Lambda}_{j'} \mathbf{f}_{t-j', \cdot} + \mathbf{e}_{t \cdot} 
+\tag{2.1}
 $$
 
 $$
-\mathbf{f}_{t \cdot} = \sum_{j=1}^p \boldsymbol{\Phi}_j \mathbf{f}_{t-j, \cdot} + \mathbf{u}_{t \cdot} \tag{2.2}
+\mathbf{f}_{t \cdot} = 
+\sum_{j=1}^p \boldsymbol{\Phi}_j \mathbf{f}_{t-j, \cdot} + \mathbf{u}_{t \cdot}
+\tag{2.2}
 $$
 
 # Writing the Dynamic Factor Model as a Static Factor Model
@@ -170,14 +178,23 @@ $$
 
 ## BANBURA and MODUGNO (2014)
 
+**Model**
+
+$$\mathbf{x}_{t \cdot} = \boldsymbol{\Lambda} \mathbf{f}_{t \cdot} + \mathbf{e}_{t \cdot}$$
+
+$$\mathbf{f}_{t \cdot} = 
+\sum_{j=1}^p \boldsymbol{\Phi}_j \mathbf{f}_{t-j, \cdot} + \mathbf{u}_{t \cdot}$$ 
+
+**Overview**
+
 BANBURA and MODUGNO (2014) EM algorithm: Write the likelihood as if the data were complete and to iterate between two steps: in the expectation step we 'fill in' the missing data in the likelihood, while in the maximization step we re-optimize this expectation.
 
-Let us denote the joint log-likelihood = by $l(Y, F ; \theta)$. Given the available data $\Omega_{T} \subseteq Y$ for the model given by equations the EM algorithm proceeds in a sequence of two alternating steps:
+Let us denote the joint log-likelihood = by $l(\mathbf{X}, \mathbf{F} ; \theta)$. Given the available data $\Omega_{T} \subseteq \mathbf{X}$ for the model given by equations the EM algorithm proceeds in a sequence of two alternating steps:
 
 1. E-step: The expectation of the log-likelihood conditional on the data is calculated using the estimates from the previous iteration, $\theta(j)$ :
 
 $$
-L(\theta, \theta(j))=\mathbb{E}_{\theta(j)}\left[l(Y, F ; \theta) \mid \Omega_{T}\right]
+L(\theta, \theta(j))=\mathbb{E}_{\theta(j)}\left[l(\mathbf{X}, \mathbf{F} ; \theta) \mid \Omega_{T}\right]
 $$
 
 2. M-step: The parameters are re-estimated through the maximization of the expected log-likelihood with respect to $\theta$:
@@ -188,161 +205,167 @@ $$
 
 **Case 1: Serially uncorrelated idiosyncratic errors**
 
-We set for simplicity $p=1\left(A=A_{1}\right)$; the modification to the case of $p>1$ is straightforward.
+We set for simplicity $p=1$, i.e. $\boldsymbol{\Phi}=\boldsymbol{\Phi}_{1}$; the modification to the case of $p>1$ is straightforward.
 
-We first consider the case of serially uncorrelated $\epsilon_{t}$ :
+We first consider the case of serially uncorrelated $\mathbf{e}_{t}$ :
 
 $$
-\varepsilon_{t} \sim \text { i.i.d. } \mathcal{N}(0, R) \tag{4}
+\mathbf{e}_{t} \sim \text { i.i.d. } \mathcal{N}(0, \boldsymbol{\Sigma}_e) \tag{4}
 $$
 
 
-where $R$ is a diagonal matrix. In that case $\theta=\{\Lambda, A, R, Q\}$ and the maximization of equation (3) results in the following expressions for $\theta(j+1)$ :
+where $\boldsymbol{\Sigma}_e$ is a diagonal matrix. In that case $\theta=\{\boldsymbol{\Lambda}, \boldsymbol{\Phi}, \boldsymbol{\Sigma}_e, \boldsymbol{\Sigma}_u\}$ and the maximization of equation (3) results in the following expressions for $\theta(j+1)$ :
 
 
 $$
 \begin{align*}
-& \Lambda(j+1)=\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[y_{t} f_{t}^{\prime} \mid \Omega_{T}\right]\right)\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[f_{t} f_{t}^{\prime} \mid \Omega_{T}\right]\right)^{-1}  \tag{5}\\
-& A(j+1)=\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[f_{t} f_{t-1}^{\prime} \mid \Omega_{T}\right]\right)\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[f_{t-1} f_{t-1}^{\prime} \mid \Omega_{T}\right]\right)^{-1} \tag{6}
+& \boldsymbol{\Lambda}(j+1)=\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{x}_{t} \mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right]\right)\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right]\right)^{-1}  \tag{5}\\
+& \boldsymbol{\Phi}(j+1)=\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mathbf{f}_{t-1}^{\prime} \mid \Omega_{T}\right]\right)\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t-1} \mathbf{f}_{t-1}^{\prime} \mid \Omega_{T}\right]\right)^{-1} \tag{6}
 \end{align*}
 $$
 
 $$
 \begin{align*}
-R(j+1) & =\operatorname{diag}\left(\frac{1}{T} \sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\left(y_{t}-\Lambda(j+1) f_{t}\right)\left(y_{t}-\Lambda(j+1) f_{t}\right)^{\prime} \mid \Omega_{T}\right]\right)  \tag{7}\\
-& =\operatorname{diag}\left(\frac{1}{T}\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[y_{t} y_{t}^{\prime} \mid \Omega_{T}\right]-\Lambda(j+1) \sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[f_{t} y_{t}^{\prime} \mid \Omega_{T}\right]\right)\right)
+\boldsymbol{\Sigma}_e(j+1) & =\operatorname{diag}\left(\frac{1}{T} \sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\left(\mathbf{x}_{t}-\boldsymbol{\Lambda}(j+1) \mathbf{f}_{t}\right)\left(\mathbf{x}_{t}-\boldsymbol{\Lambda}(j+1) \mathbf{f}_{t}\right)^{\prime} \mid \Omega_{T}\right]\right)  \tag{7}\\
+& =\operatorname{diag}\left(\frac{1}{T}\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{x}_{t} \mathbf{x}_{t}^{\prime} \mid \Omega_{T}\right]-\boldsymbol{\Lambda}(j+1) \sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mathbf{x}_{t}^{\prime} \mid \Omega_{T}\right]\right)\right)
 \end{align*}
 $$
 
 
 $$
-Q(j+1)=\frac{1}{T}\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[f_{t} f_{t}^{\prime} \mid \Omega_{T}\right]-A(j+1) \sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[f_{t-1} f_{t}^{\prime} \mid \Omega_{T}\right]\right) \tag{8}
+\boldsymbol{\Sigma}_u(j+1)=\frac{1}{T}\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right]-\boldsymbol{\Phi}(j+1) \sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t-1} \mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right]\right) \tag{8}
 $$
 
 
-When $y_{t}$ does not contain missing data, we have that
+When $\mathbf{x}_{t}$ does not contain missing data, we have that
 
 
 $$
-\mathbb{E}_{\theta(j)}\left[y_{t} y_{t}^{\prime} \mid \Omega_{T}\right]=y_{t} y_{t}^{\prime} \quad \text { and } \quad \mathbb{E}_{\theta(j)}\left[y_{t} f_{t}^{\prime} \mid \Omega_{T}\right]=y_{t} \mathbb{E}_{\theta(j)}\left[f_{t}^{\prime} \mid \Omega_{T}\right] \tag{9}
+\mathbb{E}_{\theta(j)}\left[\mathbf{x}_{t} \mathbf{x}_{t}^{\prime} \mid \Omega_{T}\right]=\mathbf{x}_{t} \mathbf{x}_{t}^{\prime} \quad \text { and } \quad \mathbb{E}_{\theta(j)}\left[\mathbf{x}_{t} \mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right]=\mathbf{x}_{t} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right] \tag{9}
 $$
 
 
-Finally, the conditional moments of the latent factors, $\mathbb{E}_{\theta(j)}\left[f_{t} \mid \Omega_{T}\right], \mathbb{E}_{\theta(j)}\left[f_{t} f_{t}^{\prime} \mid \Omega_{T}\right], \mathbb{E}_{\theta(j)}\left[f_{t-1} f_{t-1}^{\prime} \mid \Omega_{T}\right]$ and $\mathbb{E}_{\theta(j)}\left[f_{t} f_{t-1}^{\prime} \mid \Omega_{T}\right]$, can be obtained through the Kalman smoother for the state space representation:
+Finally, the conditional moments of the latent factors, $\mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mid \Omega_{T}\right], \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right], \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t-1} \mathbf{f}_{t-1}^{\prime} \mid \Omega_{T}\right]$ and $\mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mathbf{f}_{t-1}^{\prime} \mid \Omega_{T}\right]$, can be obtained through the Kalman smoother for the state space representation:
 
 $$
 \begin{array}{ll}
-y_{t}=\Lambda(j) f_{t}+\epsilon_{t}, & \epsilon_{t} \sim \text { i.i.d. } \mathcal{N}(0, R(j)) \\
-f_{t}=A(j) f_{t-1}+u_{t}, & u_{t} \sim \text { i.i.d. } \mathcal{N}(0, Q(j)) \tag{10}
+\mathbf{x}_{t}=\boldsymbol{\Lambda}(j) \mathbf{f}_{t}+\mathbf{e}_{t}, & \mathbf{e}_{t} \sim \text { i.i.d. } \mathcal{N}(0, \boldsymbol{\Sigma}_e(j)) \\
+\mathbf{f}_{t}=\boldsymbol{\Phi}(j) \mathbf{f}_{t-1}+\mathbf{u}_{t}, & \mathbf{u}_{t} \sim \text { i.i.d. } \mathcal{N}(0, \boldsymbol{\Sigma}_u(j)) \tag{10}
 \end{array}
 $$
 
-However, when $y_{t}$ contains missing values we can no longer use equation (9) when developing the expressions (5) and (7). Let $W_{t}$ be a diagonal matrix of size $n$ with $i$ th diagonal element equal to 0 if $y_{i, t}$ is missing and equal to 1 otherwise. $\Lambda(j+1)$ can be obtained as
+However, when $\mathbf{x}_{t}$ contains missing values we can no longer use equation (9) when developing the expressions (5) and (7). Let $\mathbf{W}_{t}$ be a diagonal matrix of size $N$ with $i$ th diagonal element equal to 0 if $x_{i,t}$ is missing and equal to 1 otherwise. $\boldsymbol{\Lambda}(j+1)$ can be obtained as
 
 $$
-\operatorname{vec}(\Lambda(j+1))=\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[f_{t} f_{t}^{\prime} \mid \Omega_{T}\right] \otimes W_{t}\right)^{-1} \operatorname{vec}\left(\sum_{t=1}^{T} W_{t} y_{t} \mathbb{E}_{\theta(j)}\left[f_{t}^{\prime} \mid \Omega_{T}\right]\right) \tag{11}
+\operatorname{vec}(\boldsymbol{\Lambda}(j+1))=\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right] \otimes \mathbf{W}_{t}\right)^{-1} \operatorname{vec}\left(\sum_{t=1}^{T} \mathbf{W}_{t} \mathbf{x}_{t} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right]\right) \tag{11}
 $$
 
 
-Intuitively, $W_{t}$ works as a selection matrix, so that only the available data are used in the calculations. Analogously, the expression (7) becomes
+Intuitively, $\mathbf{W}_{t}$ works as a selection matrix, so that only the available data are used in the calculations. Analogously, the expression (7) becomes
 
 $$
 \begin{align*}
-R(j+1)=\operatorname{diag} & \left(\frac { 1 } { T } \sum _ { t = 1 } ^ { T } \left(W_{t} y_{t} y_{t}^{\prime} W_{t}^{\prime}-W_{t} y_{t} \mathbb{E}_{\theta(j)}\left[f_{t}^{\prime} \mid \Omega_{T}\right] \Lambda(j+1)^{\prime} W_{t}-W_{t} \Lambda(j+1) \mathbb{E}_{\theta(j)}\left[f_{t} \mid \Omega_{T}\right] y_{t}^{\prime} W_{t}\right.\right. \\
-& \left.\left.+W_{t} \Lambda(j+1) \mathbb{E}_{\theta(j)}\left[f_{t} f_{t}^{\prime} \mid \Omega_{T}\right] \Lambda(j+1)^{\prime} W_{t}+\left(I-W_{t}\right) R(j)\left(I-W_{t}\right)\right)\right) \tag{12}
+\boldsymbol{\Sigma}_e(j+1)=\operatorname{diag} & \left(\frac { 1 } { T } \sum _ { t = 1 } ^ { T } \left(\mathbf{W}_{t} \mathbf{x}_{t} \mathbf{x}_{t}^{\prime} \mathbf{W}_{t}^{\prime}-\mathbf{W}_{t} \mathbf{x}_{t} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right] \boldsymbol{\Lambda}(j+1)^{\prime} \mathbf{W}_{t}-\mathbf{W}_{t} \boldsymbol{\Lambda}(j+1) \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mid \Omega_{T}\right] \mathbf{x}_{t}^{\prime} \mathbf{W}_{t}\right.\right. \\
+& \left.\left.+\mathbf{W}_{t} \boldsymbol{\Lambda}(j+1) \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right] \boldsymbol{\Lambda}(j+1)^{\prime} \mathbf{W}_{t}+\left(I-\mathbf{W}_{t}\right) \boldsymbol{\Sigma}_e(j)\left(I-\mathbf{W}_{t}\right)\right)\right) \tag{12}
 \end{align*}
 $$
 
-Again, only the available data update the estimate. $I-W_{t}$ in the last term 'selects' the entries of $R(j)$ corresponding to the missing observations. For example, when for some $t$ all the observations in $y_{t}$ are missing, the period $t$ contribution to $R(j+1)$ would be $R(j) / T$.
+Again, only the available data update the estimate. $I-\mathbf{W}_{t}$ in the last term 'selects' the entries of $\boldsymbol{\Sigma}_e(j)$ corresponding to the missing observations. For example, when for some $t$ all the observations in $\mathbf{x}_{t}$ are missing, the period $t$ contribution to $\boldsymbol{\Sigma}_e(j+1)$ would be $\boldsymbol{\Sigma}_e(j) / T$.
 
-When applying the Kalman filter on the state space representation (10), in case some of the observations in $y_{t}$ are missing, the corresponding rows in $y_{t}$ and $\Lambda(j)$ (and the corresponding rows and columns in $R(j)$ ) are skipped.
+When applying the Kalman filter on the state space representation (10), in case some of the observations in $\mathbf{x}_{t}$ are missing, the corresponding rows in $\mathbf{x}_{t}$ and $\boldsymbol{\Lambda}(j)$ (and the corresponding rows and columns in $\boldsymbol{\Sigma}_e(j)$ ) are skipped.
 
-With $W_{t} \equiv I$, (11) and (12) coincide with the 'complete data' expressions obtained by plugging (9) into (5) and (7).
+With $\mathbf{W}_{t} \equiv I$, (11) and (12) coincide with the 'complete data' expressions obtained by plugging (9) into (5) and (7).
 
 **Restrictions on the Parameters**
 
-Bork (2009) and Bork et al. (2009) show how to modify the M-step of Watson and Engle (1983) in order to impose restrictions of the form $H_{\Lambda} \operatorname{vec}(\Lambda)=\kappa_{\Lambda}$ for the model given by (1)-(2). Straightforward adaptation of their expressions to the missing data case results in the restricted estimate given by
+We can modify the M-step to impose restrictions of the form $H_{\Lambda} \operatorname{vec}(\boldsymbol{\Lambda})=\kappa_{\Lambda}$ for the model given by (1)-(2). Restricted estimates are given by
 
 $$
 \begin{align*}
-\operatorname{vec}\left(\Lambda_{r}(j+1)\right)= & \operatorname{vec}\left(\Lambda_{u}(j+1)\right)+\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[f_{t} f_{t}^{\prime} \mid \Omega_{T}\right] \otimes R(j)\right) H_{\Lambda}^{\prime}  \tag{13}\\
-& \times\left(H_{\Lambda}\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[f_{t} f_{t}^{\prime} \mid \Omega_{T}\right] \otimes R(j)\right) H_{\Lambda}^{\prime}\right)^{-1}\left(\kappa_{\Lambda}-H_{\Lambda} \operatorname{vec}\left(\Lambda_{u}(j+1)\right)\right)
+\operatorname{vec}\left(\boldsymbol{\Lambda}_{r}(j+1)\right)= & \operatorname{vec}\left(\boldsymbol{\Lambda}_{u}(j+1)\right)+\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right] \otimes \boldsymbol{\Sigma}_e(j)\right) H_{\Lambda}^{\prime}  \tag{13}\\
+& \times\left(H_{\Lambda}\left(\sum_{t=1}^{T} \mathbb{E}_{\theta(j)}\left[\mathbf{f}_{t} \mathbf{f}_{t}^{\prime} \mid \Omega_{T}\right] \otimes \boldsymbol{\Sigma}_e(j)\right) H_{\Lambda}^{\prime}\right)^{-1}\left(\kappa_{\Lambda}-H_{\Lambda} \operatorname{vec}\left(\boldsymbol{\Lambda}_{u}(j+1)\right)\right)
 \end{align*}
 $$
 
-where $\Lambda_{u}(j+1)$ is the unrestricted estimate given by expression (11). Restrictions on the parameters in the transition equation $H_{A} \operatorname{vec}(A)=\kappa_{A}$ can be imposed in an analogous manner (see Bork, 2009).
+where $\boldsymbol{\Lambda}_{u}(j+1)$ is the unrestricted estimate given by expression (11). Restrictions on the parameters in the transition equation $H_{\Phi} \operatorname{vec}(\boldsymbol{\Phi})=\kappa_{\Phi}$ can be imposed in an analogous manner (see Bork, 2009).
 
 The methodology here can be applied to estimate these types of models in the presence of missing data.
 
 **Case 2: Modelling the Serial Correlation in the Idiosyncratic Component**
 
-We represent the idiosyncratic component by an $\operatorname{AR}(1)$ process and to add it to the state vector. More precisely, we assume that $\epsilon_{i, t}, i=1, \ldots, n$ in (1) can be decomposed as
+We represent the idiosyncratic component by an $\operatorname{AR}(1)$ process and to add it to the state vector. More precisely, we assume that $e_{i,t}, i=1, \ldots, N$ in (1) can be decomposed as
 
 $$
 \begin{array}{ll}
-\epsilon_{i, t}=\tilde{\epsilon}_{i, t}+\xi_{i, t}, & \xi_{i, t} \sim \text { i.i.d. } \mathcal{N}(0, \kappa) \\
-\tilde{\epsilon}_{i, t}=\alpha_{i} \tilde{\epsilon}_{i, t-1}+e_{i, t}, & e_{i, t} \sim \text { i.i.d. } \mathcal{N}\left(0, \sigma_{i}^{2}\right) \tag{14}
+e_{i,t}=\tilde{e}_{i,t}+\xi_{i,t}, & \xi_{i,t} \sim \text { i.i.d. } \mathcal{N}(0, \kappa) \\
+\tilde{e}_{i,t}=\alpha_{i} \tilde{e}_{i,t-1}+\varepsilon_{i,t}, & \varepsilon_{i,t} \sim \text { i.i.d. } \mathcal{N}\left(0, \sigma_{i}^{2}\right) \tag{14}
 \end{array}
 $$
 
-where both $\xi_{t}=\left[\xi_{1, t}, \ldots, \xi_{n, t}\right]^{\prime}$ and $\tilde{\epsilon}_{t}=\left[\tilde{\epsilon}_{1, t}, \ldots, \tilde{\epsilon}_{n, t}\right]^{\prime}$ are cross-sectionally uncorrelated and $\kappa$ is a very small number. Combining (1), (2) and (14) results in the new state space representation:
+where both $\xi_{t}=\left[\xi_{1,t}, \ldots, \xi_{N,t}\right]^{\prime}$ and $\tilde{\mathbf{e}}_{t}=\left[\tilde{e}_{1,t}, \ldots, \tilde{e}_{N,t}\right]^{\prime}$ are cross-sectionally uncorrelated and $\kappa$ is a very small number. Combining (1), (2) and (14) results in the new state space representation:
 
 $$
 \begin{align*}
-y_{t}=\tilde{\Lambda} \tilde{f}_{t}+\xi_{t}, & \xi_{t} \sim \mathcal{N}(0, \tilde{R}), \\
-\tilde{f}_{t}=\tilde{A} \tilde{f}_{t-1}+\tilde{u}_{t}, & \tilde{u}_{t} \sim \mathcal{N}(0, \tilde{Q}) \tag{15}
+
+\mathbf{x}_{t}=
+\tilde{\boldsymbol{\Lambda}} \tilde{\mathbf{f}}_{t}+\xi_{t}, \ \ \ & \xi_{t} \sim \mathcal{N}(0, \kappa \mathbf{I}) \\
+
+\tilde{\mathbf{f}}_{t}=
+\tilde{\boldsymbol{\Phi}} \tilde{\mathbf{f}}_{t-1}+\tilde{\mathbf{u}}_{t}, \ \ \ & \tilde{\mathbf{u}}_{t} \sim \mathcal{N}(0, \tilde{\boldsymbol{\Sigma}}_u) 
+
+\tag{15}
 \end{align*}
 $$
 
 where
 
 $$
-\tilde{f}_{t}=\left[
+\tilde{\mathbf{f}}_{t}=\left[
 \begin{array}{l}
-f_{t} \\
-\tilde{\epsilon}_{t}
+\mathbf{f}_{t} \\
+\tilde{\mathbf{e}}_{t}
 \end{array}
 \right]
 $$
 
 $$
-\tilde{u}_{t}=\left[
+\tilde{\mathbf{u}}_{t}=\left[
 \begin{array}{l}
-u_{t} \\
-e_{t}
+\mathbf{u}_{t} \\
+\varepsilon_{t}
 \end{array}
 \right]
 $$
 
 $$
-\tilde{\Lambda}=\left[
+\tilde{\boldsymbol{\Lambda}}=\left[
 \begin{array}{ll}
-\Lambda & I
+\boldsymbol{\Lambda} & I
 \end{array}
 \right]
 $$
 
 $$
-\tilde{A}=\left[
+\tilde{\boldsymbol{\Phi}}=\left[
 \begin{array}{cc}
-A & 0 \\
-0 & \operatorname{diag}\left(\alpha_{1}, \cdots, \alpha_{n}\right)
+\boldsymbol{\Phi} & 0 \\
+0 & \operatorname{diag}\left(\alpha_{1}, \cdots, \alpha_{N}\right)
 \end{array}
 \right]
 $$
 
 $$
-\tilde{Q}=\left[
+\tilde{\boldsymbol{\Sigma}}_u=\left[
 \begin{array}{cc}
-Q & 0 \\
-0 & \operatorname{diag}\left(\sigma_{1}^{2}, \cdots, \sigma_{n}^{2}\right)
+\boldsymbol{\Sigma}_u & 0 \\
+0 & \operatorname{diag}\left(\sigma_{1}^{2}, \cdots, \sigma_{N}^{2}\right)
 \end{array}
 \right]
 $$
 
-$e_{t}=\left[e_{1, t}, \ldots, e_{n, t}\right]^{\prime}$ and $\tilde{R}$ is a fixed diagonal matrix with $\kappa$ on the diagonal.
+$$\varepsilon_{t}=\left[\varepsilon_{1,t}, \ldots, \varepsilon_{N,t}\right]^{\prime}$$
 
 # References
 
-- Darné, Olivier, Karim Barhoumi, and Laurent Ferrara. “Dynamic Factor Models: A Review of the Literature,” 2018.
-- Bańbura, Marta, and Michele Modugno. “Maximum Likelihood Estimation of Factor Models on Datasets with Arbitrary Pattern of Missing Data.” Journal of Applied Econometrics 29, no. 1 (2014): 133–60. https://doi.org/10.1002/jae.2306.
+- Darné, Olivier, Karim Barhoumi, and Laurent Ferrara. "Dynamic Factor Models: A Review of the Literature," 2018.
+- Bańbura, Marta, and Michele Modugno. "Maximum Likelihood Estimation of Factor Models on Datasets with Arbitrary Pattern of Missing Data." Journal of Applied Econometrics 29, no. 1 (2014): 133–60. https://doi.org/10.1002/jae.2306.
