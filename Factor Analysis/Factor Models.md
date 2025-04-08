@@ -65,9 +65,13 @@ By contrast, Factor Analysis posits that each observed data vector $\mathbf{x}_t
 - **Common Component for variable $i$**: $$\mathbf{f}_{t \cdot}^T \boldsymbol{\lambda}_{i \cdot}$$
 
 - **Exact/Strict Factor Model**: Assumes $\boldsymbol{\Sigma}_e$ is a diagonal matrix.
+    - I.I.D. hypotheses and hypotheses on the diagonality of $\boldsymbol{\Sigma}_e$, which prohibit the cross correlation, are often too strong for economic data. This can result in a risk of misspecification.
 
 - **Approximate Factor Model**: Allows $\boldsymbol{\Sigma}_e$ to be non-diagonal matrix, allowing for weak correlation among idiosyncratic components.
     - Modeling idiosyncratic dynamics might improve forecasts for two reasons: first, we could forecast the idiosyncratic component; second, we could improve the efficiency of the common factor estimates in small samples or in real-time applications in which the cross-sections at the end of the sample are incomplete.
+    - Idiosyncratic components can both be weakly mutually correlated and show little heteroskedasticity.
+    - It is possible to have a weak correlation between the factors and the idiosyncratic components.
+    - In contrast to strict factor models, approximate Factor Models are appropriate for large $N$. 
 
 - **Static Factor Model**: In a static factor model, the relationship between observed variables and latent factors is contemporaneous, with no lag structure in the observation equation.
 
@@ -168,23 +172,23 @@ $$
 
 BANBURA and MODUGNO (2014) EM algorithm: Write the likelihood as if the data were complete and to iterate between two steps: in the expectation step we 'fill in' the missing data in the likelihood, while in the maximization step we re-optimize this expectation.
 
-Let us denote the joint log-likelihood of $y_{t}$ and $f_{t}, t=1, \ldots, T$ by $l(Y, F ; \theta)$, where $Y=\left[y_{1}, \ldots, y_{T}\right]$ and $F=\left[f_{1}, \ldots, f_{T}\right]$. Given the available data $\Omega_{T} \subseteq Y,{ }^{7}$ for the model given by equations (1) and (2) the EM algorithm proceeds in a sequence of two alternating steps:
+Let us denote the joint log-likelihood = by $l(Y, F ; \theta)$. Given the available data $\Omega_{T} \subseteq Y$ for the model given by equations the EM algorithm proceeds in a sequence of two alternating steps:
 
-1. E-step: the expectation of the log-likelihood conditional on the data is calculated using the estimates from the previous iteration, $\theta(j)$ :
+1. E-step: The expectation of the log-likelihood conditional on the data is calculated using the estimates from the previous iteration, $\theta(j)$ :
 
 $$
 L(\theta, \theta(j))=\mathbb{E}_{\theta(j)}\left[l(Y, F ; \theta) \mid \Omega_{T}\right]
 $$
 
-2. M-step: the parameters are re-estimated through the maximization of the expected log-likelihood with respect to $\theta$ :
+2. M-step: The parameters are re-estimated through the maximization of the expected log-likelihood with respect to $\theta$:
 
 $$
 \theta(j+1)=\arg \max _{\theta} L(\theta, \theta(j)) \tag{3}
 $$
 
-We set for simplicity $p=1\left(A=A_{1}\right)$; the modification to the case of $p>1$ is straightforward.
-
 **Case 1: Serially uncorrelated idiosyncratic errors**
+
+We set for simplicity $p=1\left(A=A_{1}\right)$; the modification to the case of $p>1$ is straightforward.
 
 We first consider the case of serially uncorrelated $\epsilon_{t}$ :
 
